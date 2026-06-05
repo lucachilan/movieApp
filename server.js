@@ -1,36 +1,68 @@
-import { loadMovies } from "./src/js/movieDisplay.mjs";
-import '../css/main.css';
-/*
- * Client-side route definitions.
- * Maps URL pathnames to their page initialization functions.
- */
-const routes = {
-    "/": { handler: loadMovies, title: "Home" },
-    "/index.html": { handler: loadMovies, title: "Home" },
-    "/movie/": { handler: loadMovies, title: "Movie Details" },
-    "/wishlist/": { handler: null, title: "Wishlist" }
+import http from "http";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const PORT = process.env.PORT || 3000;
+const DIST_DIR = path.join(__dirname, "dist");
+
+const MIME_TYPES = {
+  ".html": "text/html",
+  ".css": "text/css",
+  ".js": "application/javascript",
+  ".mjs": "application/javascript",
+  ".json": "application/json",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
+  ".svg": "image/svg+xml",
+  ".ico": "image/x-icon",
+  ".woff": "font/woff",
+  ".woff2": "font/woff2",
+  ".ttf": "font/ttf",
 };
 
-/*
- * Initializes the correct page handler based on the current URL path.
- */
-export function initRoute() {
-    const path = window.location.pathname;
-    const route = routes[path] || routes["/"];
+const server = http.createServer((req, res) => {
+  let urlPath = req.url.split("?")[0]; // strip query strings
 
-    document.title = `${route.title} | Movie App`;
+  // Default to index.html for root
+  if (urlPath === "/") urlPath = "/index.html";
 
-    document.querySelectorAll('nav a.nav-link').forEach(link => {
-        if (link.getAttribute('href') === path ||
-            (path === '/index.html' && link.getAttribute('href') === '/')) {
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
-        }
-    });
-    if (route.handler) {
-        route.handler();
+  let filePath = path.join(DIST_DIR, urlPath);
+
+  // Security: prevent path traversal
+  if (!filePath.startsWith(DIST_DIR)) {
+    res.writeHead(403);
+    res.end("Forbidden");
+    return;
+  }
+
+  fs.stat(filePath, (err, stats) => {
+    // If file not found or is a directory, fall back to index.html (SPA routing)
+    if (err || stats.isDirectory()) {
+      filePath = path.join(DIST_DIR, "index.html");
     }
-}
 
-initRoute();
+    fs.readFile(filePath, (readErr, data) => {
+      if (readErr) {
+        res.writeHead(404);
+        res.end("404 Not Found");
+        return;
+      }
+
+      const ext = path.extname(filePath).toLowerCase();
+      const contentType = MIME_TYPES[ext] || "application/octet-stream";
+
+      res.writeHead(200, { "Content-Type": contentType });
+      res.end(data);
+    });
+  });
+});
+
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

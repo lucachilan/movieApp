@@ -15,7 +15,8 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "vite",
+    "start": "node server.js",
+    "dev": "vite",
     "preview": "vite preview",
     "build": "vite build --emptyOutDir",
     "lint": "eslint *.js src/**/*.js",

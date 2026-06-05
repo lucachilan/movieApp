@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 import injectHTML from "vite-plugin-html-inject";
 
 export default defineConfig({
-  root: "",
+  root: "src",
   plugins: [injectHTML()],
   server: {
     watch: {

@@ -9,7 +9,9 @@ const routes = {
     "/": { handler: loadMovies, title: "Home" },
     "/index.html": { handler: loadMovies, title: "Home" },
     "/movie/": { handler: loadMovies, title: "Movie Details" },
-    "/wishlist/": { handler: null, title: "Wishlist" }
+    "/movie/index.html": { handler: loadMovies, title: "Movie Details" },
+    "/wishlist/": { handler: null, title: "Wishlist" },
+    "/wishlist/index.html": { handler: null, title: "Wishlist" }
 };
 
 /*
@@ -17,7 +19,7 @@ const routes = {
  */
 export function initRoute() {
     const path = window.location.pathname;
-    const route = routes[path] || routes["/"];
+    const route = routes[path] || routes["/"] || { handler: null, title: "Movie App" };
 
     document.title = `${route.title} | Movie App`;
 

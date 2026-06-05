@@ -47,16 +47,15 @@ export function handleCardDisplay(movie) {
     movieContainer.appendChild(card);
 }
 
-function renderMovies(movies) {
-    movieContainer.innerHTML = '';
-    movies.forEach(movie => handleCardDisplay(movie));
-}
-
 //  Load and display movies
 export async function loadMovies() {
+    const movieContainer = document.getElementById("movie-container");
+    if (!movieContainer) return;
+    
     try {
         const movies = await fetchMovies();
-        renderMovies(movies);
+        movieContainer.innerHTML = '';
+        movies.forEach(movie => handleCardDisplay(movie));
     } catch (error) {
         console.error("Failed to load movies:", error);
         movieContainer.innerHTML = `

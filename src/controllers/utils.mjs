@@ -11,6 +11,7 @@ export function setLocalStorage(key, data) {
 // makes header darker when scrolling
 addEventListener('scroll', () => {
     const header = document.querySelector('.header');
+    if (!header) return;
     if (window.scrollY > 150) {
         header.classList.add('lower')
     }

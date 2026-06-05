@@ -1,0 +1,243 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Ubuntu:wght@400;500;700&display=swap');
+
+:root {
+    /* background */
+    --background-main: #121212;
+    --background-card: #2e2e2e;
+    --background-header: #12121291;
+    /* font colors */
+    --font-main-color: #ffffff;
+    --font-secondary-color: #b0b0b0;
+    --font-contrast-color: #450f55;
+    --font-light-contrast-color: #f9f9f9;
+    --font-link-color: #c493cb;
+    /* accent */
+    --star-full: #b88ec4;
+    --star-empty: #555;
+    /* font style */
+    --primary-font: "Open Sans", sans-serif;
+    --secondary-font: "Ubuntu", sans-serif;
+    /* font sizes */
+    --big-titles: 3rem;
+    --medium-titles: 2rem;
+    --text: 1.3rem;
+    --small-text: 1rem;
+
+    /* radius */
+    --inner-radius: 10px;
+    --outer-radius: 20px;
+
+    /* animation */
+    --animation: 0.3s;
+
+    /* variables */
+
+}
+
+/* ═══════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(to left, var(--background-main), var(--background-card));
+    height: 100vh;
+    font-family: var(--secondary-font);
+    color: var(--font-main-color);
+    min-width: 320px;
+}
+
+h1,
+h2,
+a {
+    font-family: var(--primary-font);
+}
+
+.btn {
+    display: inline-block;
+
+    & a {
+        display: inline-block;
+        cursor: pointer;
+        color: var(--font-contrast-color);
+        background-color: var(--font-main-color);
+        padding: 1rem;
+        border-radius: var(--inner-radius);
+        font-size: var(--text);
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform var(--animation);
+    }
+
+    & a:hover {
+        transform: scale(1.1);
+    }
+}
+
+
+/* ═══════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════ */
+
+.header {
+    background: linear-gradient(to bottom, var(--background-header) 60%, transparent);
+    display: grid;
+    grid-template-columns: 1fr 10fr 1fr;
+    position: sticky;
+    top: 0px;
+    z-index: 300;
+    transition: background-color var(--animation);
+
+    & .logo img {
+        width: 100px;
+        margin-left: 2rem;
+    }
+}
+
+.lower {
+    background-color: var(--background-header);
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+a.nav-link {
+    text-decoration: none;
+    color: var(--font-secondary-color);
+    font-size: var(--text);
+    margin: 0 30px;
+    transition: color var(--animation);
+    font-weight: 700;
+
+    &:hover:not(.active) {
+        color: var(--font-main-color);
+    }
+
+    &.active {
+        border-bottom: 2px solid var(--font-main-color);
+        color: var(--font-main-color);
+    }
+}
+
+/* ═══════════════════════════════════════════
+    HERO
+   ═══════════════════════════════════════════ */
+.hero-container {
+    top: -136px;
+    position: relative;
+    z-index: 0;
+
+    & .hero-image {
+        width: 100%;
+        max-height: 736px;
+        object-fit: cover;
+    }
+
+    & #watch-something-btn {
+        position: absolute;
+        top: 70%;
+        right: 15%;
+        transform: translateY(-50%);
+
+        &:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+    }
+}
+
+/* ═══════════════════════════════════════════
+   MOVIE CONTAINER
+   ═══════════════════════════════════════════ */
+
+#movie-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+}
+
+/* ═══════════════════════════════════════════
+   MOVIE CARD
+   ═══════════════════════════════════════════ */
+
+div.movie-card {
+    width: 100%;
+    height: 500px;
+    display: grid;
+    grid-template-areas:
+        'image image'
+        'title title'
+        'year rating'
+        'genre genre'
+        'description description';
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background-card);
+    border-radius: var(--inner-radius);
+    padding: 20px;
+    gap: 10px;
+    margin: 10px;
+
+    & img {
+        width: 150px;
+        height: 225px;
+        border-radius: var(--inner-radius);
+        grid-area: image;
+        margin: 0 auto;
+    }
+
+    & .movie-title {
+        grid-area: title;
+        text-align: center;
+        font-size: var(--medium-titles);
+
+    }
+
+    & .movie-year {
+        grid-area: year;
+        text-align: right;
+    }
+
+    & .movie-rating {
+        grid-area: rating;
+
+        /* empty stars */
+        & .empty-star {
+            color: var(--star-empty);
+        }
+
+        /* half-filled stars */
+        & .half-star {
+            background: linear-gradient(to right, var(--star-full) 50%, var(--star-empty) 50%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* filled stars */
+        & .full-star {
+            color: var(--star-full);
+        }
+    }
+
+    & .movie-genre {
+        grid-area: genre;
+        text-align: center;
+        font-size: var(--small-text);
+    }
+
+    & .movie-description {
+        grid-area: description;
+    }
+}

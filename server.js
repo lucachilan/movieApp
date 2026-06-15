@@ -55,6 +55,12 @@ const server = http.createServer((req, res) => {
         const TMDB_URL = `https://api.themoviedb.org/3/movie/${category}?language=en-US&page=1`;
         const TMDB_TOKEN = process.env.TMDB_ACCESS_TOKEN;
 
+        if (!TMDB_TOKEN) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'TMDB_ACCESS_TOKEN environment variable is not configured on the server.' }));
+            return;
+        }
+
         fetch(TMDB_URL, {
             method: 'GET',
             headers: {

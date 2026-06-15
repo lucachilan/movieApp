@@ -128,6 +128,36 @@ a.nav-link {
     }
 }
 
+
+/* ═══════════════════════════════════════════
+    FOOTER
+   ═══════════════════════════════════════════ */
+
+footer {
+    background-color: var(--font-contrast-color);
+    text-align: center;
+    font-size: var(--small-text);
+    padding: 1rem;
+
+    & p {
+        font-weight: 600;
+    }
+}
+
+.credits {
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    & img {
+        height: 50px;
+        max-width: 150px;
+    }
+
+}
+
 /* ═══════════════════════════════════════════
     HERO
    ═══════════════════════════════════════════ */
@@ -154,8 +184,14 @@ a.nav-link {
     }
 }
 
+
+/* general in page */
+h1 {
+    text-align: center;
+}
+
 /* ═══════════════════════════════════════════
-   MOVIE CONTAINER
+   MOVIE LIST CONTAINER
    ═══════════════════════════════════════════ */
 
 #movie-container {
@@ -188,6 +224,7 @@ div.movie-card {
     padding: 20px;
     gap: 10px;
     margin: 10px;
+    cursor: pointer;
 
     & img {
         width: 150px;
@@ -240,4 +277,43 @@ div.movie-card {
     & .movie-description {
         grid-area: description;
     }
+}
+
+/* ═══════════════════════════════════════════
+   CATEGORIES FILTER
+   ═══════════════════════════════════════════ */
+.categories-filter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin: 2rem auto;
+    flex-wrap: wrap;
+    max-width: 800px;
+    padding: 0 16px;
+}
+
+.categories-filter .category {
+    font-family: var(--primary-font);
+    font-size: var(--small-text);
+    font-weight: 600;
+    color: var(--font-secondary-color);
+    background-color: var(--background-card);
+    padding: 8px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all var(--animation) ease;
+    user-select: none;
+}
+
+.categories-filter .category:hover {
+    color: var(--font-contrast-color);
+    background-color: var(--font-main-color);
+    transform: translateY(-2px);
+}
+
+.categories-filter .category.active {
+    color: var(--font-light-contrast-color);
+    background-color: var(--font-contrast-color);
+    transform: scale(1.05);
 }

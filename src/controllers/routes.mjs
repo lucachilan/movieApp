@@ -1,4 +1,4 @@
-import { loadMovies } from "./movieDisplay.mjs";
+import { loadMovies, initMovieListPage } from "../js/movieList.mjs";
 import "../css/main.css";
 
 /*
@@ -8,8 +8,8 @@ import "../css/main.css";
 const routes = {
     "/": { handler: loadMovies, title: "Home" },
     "/index.html": { handler: loadMovies, title: "Home" },
-    "/movie/": { handler: loadMovies, title: "Movie Details" },
-    "/movie/index.html": { handler: loadMovies, title: "Movie Details" },
+    "/movies/": { handler: initMovieListPage, title: "Movies" },
+    "/movies/index.html": { handler: initMovieListPage, title: "Movies" },
     "/wishlist/": { handler: null, title: "Wishlist" },
     "/wishlist/index.html": { handler: null, title: "Wishlist" }
 };

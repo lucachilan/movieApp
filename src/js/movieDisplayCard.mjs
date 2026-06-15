@@ -1,5 +1,3 @@
-import { fetchMovies } from "../models/movieModel.mjs";
-
 const movieContainer = document.getElementById("movie-container");
 
 // Display stars for rating
@@ -45,28 +43,12 @@ export function handleCardDisplay(movie) {
                 `;
 
     movieContainer.appendChild(card);
+
+    card.addEventListener("click", () => {
+        handleCardClick(movie);
+    })
 }
 
-//  Load and display movies
-export async function loadMovies() {
-    const movieContainer = document.getElementById("movie-container");
-    if (!movieContainer) return;
-    
-    try {
-        const movies = await fetchMovies();
-        movieContainer.innerHTML = '';
-        movies.forEach(movie => handleCardDisplay(movie));
-    } catch (error) {
-        console.error("Failed to load movies:", error);
-        movieContainer.innerHTML = `
-            <div class="error-message">
-                <p>Failed to load movies. Please try again later.</p>
-            </div>
-        `;
-    }
-}
-
-//  Display movie page
-export function handlePageDisplay() {
-
+function handleCardClick(movie) {
+    console.log(movie.title);
 }

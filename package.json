@@ -1,14 +1,14 @@
 {
-  "name": "movie-app",
+  "name": "movieApp",
   "version": "1.0.0",
   "description": "Movie App",
-  "homepage": "https://github.com/lucachilan/movie-app#readme",
+  "homepage": "https://lucachilan.github.io/movieApp",
   "bugs": {
-    "url": "https://github.com/lucachilan/movie-app/issues"
+    "url": "https://github.com/lucachilan/movieApp/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lucachilan/movie-app.git"
+    "url": "git+https://github.com/lucachilan/movieApp.git"
   },
   "license": "ISC",
   "author": "Luca Chilan",
@@ -22,9 +22,10 @@
     "lint": "eslint *.js src/**/*.js",
     "format": "prettier --ignore-path ./.gitignore --write \"./**/*.{html,json,js,ts,css}\"",
     "test": "jest",
-    "deploy": "npm run build && gh-pages -d dist"
+    "deploy": "gh-pages -d src"
   },
   "devDependencies": {
+    "gh-pages": "^6.3.0",
     "vite": "^8.0.16",
     "vite-plugin-html-inject": "^1.1.2"
   }

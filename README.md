@@ -1,4 +1,4 @@
-# movie-app
+# movieApp
 8.	Timeline
 Week 5 – 
 a.	HTML structure and basic style

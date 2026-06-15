@@ -23,13 +23,6 @@ export default defineConfig(({ mode }) => {
                 const url = `https://api.themoviedb.org/3/movie/${category}?language=en-US&page=1`;
                 const token = env.TMDB_ACCESS_TOKEN;
 
-                if (!token) {
-                  res.statusCode = 500;
-                  res.setHeader("Content-Type", "application/json");
-                  res.end(JSON.stringify({ error: "TMDB_ACCESS_TOKEN is not configured in the local .env file." }));
-                  return;
-                }
-
                 const response = await fetch(url, {
                   method: "GET",
                   headers: {

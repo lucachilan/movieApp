@@ -11,7 +11,9 @@ const routes = {
     "/movies/": { handler: initMovieListPage, title: "Movies" },
     "/movies/index.html": { handler: initMovieListPage, title: "Movies" },
     "/wishlist/": { handler: null, title: "Wishlist" },
-    "/wishlist/index.html": { handler: null, title: "Wishlist" }
+    "/wishlist/index.html": { handler: null, title: "Wishlist" },
+    // "/movie/:id/": { handler: null, title: "Movie" },
+    // "/movie/:id/index.html": { handler: null, title: "Movie" }
 };
 
 /*

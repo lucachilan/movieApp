@@ -1,24 +1,3 @@
-const movieContainer = document.getElementById("movie-container");
-
-// Display stars for rating
-
-function handleRatingDisplay(rating) {
-    const totalStars = 5;
-    let starsHTML = '';
-    for (let i = 0; i < totalStars; i++) {
-        if (i < Math.floor(rating)) {
-            starsHTML += '<span class="full-star">★</span>';
-        } else if (i < Math.ceil(rating)) {
-            starsHTML += '<span class="half-star">★</span>';
-        } else {
-            starsHTML += '<span class="empty-star">★</span>';
-        }
-    }
-    return starsHTML;
-}
-
-// Display movie card
-
 export function handleCardDisplay(movie) {
     const starsHTML = handleRatingDisplay(movie.stars);
 
@@ -47,8 +26,4 @@ export function handleCardDisplay(movie) {
     card.addEventListener("click", () => {
         handleCardClick(movie);
     })
-}
-
-function handleCardClick(movie) {
-    console.log(movie.id);
 }

@@ -45,14 +45,11 @@ const MIME_TYPES = {
     ".ttf": "font/ttf",
 };
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
     let urlPath = req.url.split("?")[0]; // strip query strings
 
     // Intercept dynamic API proxy requests
-    const apiMatch = urlPath.match(/^\/api\/movies\/([a-zA-Z0-9_]+)$/);
-    if (apiMatch) {
-        const category = apiMatch[1];
-        const TMDB_URL = `https://api.themoviedb.org/3/movie/${category}?language=en-US&page=1`;
+    if (urlPath.startsWith("/api/")) {
         const TMDB_TOKEN = process.env.TMDB_ACCESS_TOKEN;
 
         if (!TMDB_TOKEN) {
@@ -61,25 +58,90 @@ const server = http.createServer((req, res) => {
             return;
         }
 
-        fetch(TMDB_URL, {
-            method: 'GET',
-            headers: {
-                accept: 'application/json',
-                Authorization: `Bearer ${TMDB_TOKEN}`
-            }
-        })
-            .then(apiRes => {
-                if (!apiRes.ok) {
-                    res.writeHead(apiRes.status, { 'Content-Type': 'application/json' });
-                    return apiRes.json().then(errData => res.end(JSON.stringify(errData)));
+        let TMDB_URL = "";
+
+        const matchCategory = urlPath.match(/^\/api\/movies\/([a-zA-Z0-9_]+)$/);
+        const matchVideos = urlPath.match(/^\/api\/movie\/([0-9]+)\/videos$/);
+        const matchProviders = urlPath.match(/^\/api\/movie\/([0-9]+)\/providers$/);
+        const matchDetail = urlPath.match(/^\/api\/movie\/([0-9]+)$/);
+        const matchDiscover = urlPath.match(/^\/api\/discover$/);
+
+        if (matchCategory) {
+            TMDB_URL = `https://api.themoviedb.org/3/movie/${matchCategory[1]}?language=en-US&page=1`;
+        } else if (matchVideos) {
+            TMDB_URL = `https://api.themoviedb.org/3/movie/${matchVideos[1]}/videos?language=en-US`;
+        } else if (matchProviders) {
+            TMDB_URL = `https://api.themoviedb.org/3/movie/${matchProviders[1]}/watch/providers`;
+        } else if (matchDetail) {
+            TMDB_URL = `https://api.themoviedb.org/3/movie/${matchDetail[1]}?language=en-US`;
+        } else if (matchDiscover) {
+            const parsedUrl = new URL(req.url, "http://localhost");
+            const queryVal = parsedUrl.searchParams.get("query");
+            const GENRE_MAP = {
+                "action": 28, "adventure": 12, "animation": 16, "comedy": 35, "crime": 80,
+                "documentary": 99, "drama": 18, "family": 10751, "fantasy": 14, "history": 36,
+                "horror": 27, "music": 10402, "mystery": 9648, "romance": 10749,
+                "science fiction": 878, "tv movie": 10770, "thriller": 53, "war": 10752, "western": 37
+            };
+
+            if (queryVal) {
+                const cleanQuery = queryVal.trim().toLowerCase();
+                const genreId = GENRE_MAP[cleanQuery];
+                if (genreId) {
+                    TMDB_URL = `https://api.themoviedb.org/3/discover/movie?with_genres=${genreId}&language=en-US&page=1`;
+                } else {
+                    // Fetch keyword ID
+                    const kwUrl = `https://api.themoviedb.org/3/search/keyword?query=${encodeURIComponent(cleanQuery)}&page=1`;
+                    try {
+                        const kwRes = await fetch(kwUrl, {
+                            headers: {
+                                accept: 'application/json',
+                                Authorization: `Bearer ${TMDB_TOKEN}`
+                            }
+                        });
+                        if (kwRes.ok) {
+                            const kwData = await kwRes.json();
+                            if (kwData.results && kwData.results.length > 0) {
+                                const kwId = kwData.results[0].id;
+                                TMDB_URL = `https://api.themoviedb.org/3/discover/movie?with_keywords=${kwId}&language=en-US&page=1`;
+                            }
+                        }
+                    } catch (e) {
+                        // Fallback to text search on error
+                    }
+                    if (!TMDB_URL) {
+                        TMDB_URL = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(cleanQuery)}&language=en-US&page=1`;
+                    }
                 }
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                return apiRes.json().then(data => res.end(JSON.stringify(data)));
+            } else {
+                TMDB_URL = `https://api.themoviedb.org/3/discover/movie?language=en-US&page=1`;
+            }
+        }
+
+        if (TMDB_URL) {
+            fetch(TMDB_URL, {
+                method: 'GET',
+                headers: {
+                    accept: 'application/json',
+                    Authorization: `Bearer ${TMDB_TOKEN}`
+                }
             })
-            .catch(err => {
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: err.message || 'Failed to fetch movies from TMDB' }));
-            });
+                .then(apiRes => {
+                    if (!apiRes.ok) {
+                        res.writeHead(apiRes.status, { 'Content-Type': 'application/json' });
+                        return apiRes.json().then(errData => res.end(JSON.stringify(errData)));
+                    }
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    return apiRes.json().then(data => res.end(JSON.stringify(data)));
+                })
+                .catch(err => {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: err.message || 'Failed to fetch from TMDB' }));
+                });
+        } else {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Endpoint not found' }));
+        }
         return;
     }
 
